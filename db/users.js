@@ -1,3 +1,4 @@
+const { client } = require("./client");
 async function createUser({ username, password }) {
   try {
     const {

@@ -55,5 +55,9 @@ async function updateActivity({ id, name, description }) {
             [id, name, description]
             );
     }
-}
+    return activity;
+    } catch (error) {
+        throw error;
+    };
+
 module.exports = { getActivityById, getAllActivites, createActivity, updateActivity };

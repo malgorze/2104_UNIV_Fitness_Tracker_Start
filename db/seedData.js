@@ -6,6 +6,10 @@ const {
   getUser,
   getUserByID,
   getUserByUsername,
+  getActivityById,
+  getAllActivities,
+  createActivity,
+  updateActivity,
 } = require("./index");
 
 async function dropTables() {
@@ -248,7 +252,7 @@ async function rebuildDB() {
     await dropTables();
     await createTables();
     await createInitialUsers();
-    // await createInitialActivities();
+    await createInitialActivities();
     // await createInitialRoutines();
     // await createInitialRoutineActivities();
   } catch (error) {

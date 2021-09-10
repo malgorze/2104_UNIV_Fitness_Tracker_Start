@@ -10,6 +10,11 @@ const {
   getAllActivities,
   createActivity,
   updateActivity,
+  getAllRoutines,
+  getRoutinesWithoutActivities,
+  getRoutineById,
+  getAllPublicRoutines,
+  createRoutine,
 } = require("./index");
 
 async function dropTables() {
@@ -253,7 +258,7 @@ async function rebuildDB() {
     await createTables();
     await createInitialUsers();
     await createInitialActivities();
-    // await createInitialRoutines();
+    await createInitialRoutines();
     // await createInitialRoutineActivities();
   } catch (error) {
     console.log("Error during rebuildDB");

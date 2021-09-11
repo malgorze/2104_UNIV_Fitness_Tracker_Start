@@ -10,9 +10,11 @@ async function getActivityById(id) {
         FROM activities
         WHERE id=${id}
         ;`);
+
     if (!activity) {
       return null;
     }
+
     return activity;
   } catch (error) {
     throw error;
@@ -62,9 +64,10 @@ async function updateActivity({ id, name, description }) {
   try {
     const activity = await getActivityById(id);
     if (name) {
+      // TODO: Make sure to update the activity variable here
       await client.query(
         `UPDATE activities
-        SET name="${name}"
+        SET name=$1
         WHERE id=${id}`,
         [name]
       );
@@ -72,7 +75,7 @@ async function updateActivity({ id, name, description }) {
     if (description) {
       await client.query(
         `UPDATE activities
-        SET description="${description}"
+        SET description=$1
         WHERE id=${id}`,
         [description]
       );

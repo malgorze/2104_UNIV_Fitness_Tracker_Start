@@ -31,6 +31,13 @@ const {
   getRoutineActivitiesByRoutine,
 } = require("./routine_activities");
 
+// TODO: Finish implementing this
+// module.exports = {
+//   ...require("./users"),
+//   ...require("./activity"),
+//   ...require("./routine_activities")
+// }
+
 module.exports = {
   client,
   createUser,

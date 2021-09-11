@@ -15,6 +15,11 @@ const {
   getRoutineById,
   getAllPublicRoutines,
   createRoutine,
+  getRoutineActivityById,
+  addActivityToRoutine,
+  updateRoutineActivity,
+  destroyRoutineActivity,
+  getRoutineActivitiesByRoutine,
 } = require("./index");
 
 async function dropTables() {

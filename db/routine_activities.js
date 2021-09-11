@@ -37,7 +37,7 @@ async function addActivityToRoutine({
       rows: [routine_activity],
     } = await client.query(
       ` 
-        INSERT INTO routine_activities(routineId, activityId, count, duration)
+        INSERT INTO routine_activities("routineId", "activityId", count, duration)
         VALUES($1, $2, $3, $4)
         RETURNING *;
         `,
@@ -75,13 +75,9 @@ async function updateRoutineActivity({ id, count, duration }) {
 
 async function destroyRoutineActivity(id) {
   try {
-    const {
-      rows: [routine_activity],
-    } = await client.query(`
-        DELETE routine_activity
-        FROM routine_activities
-        WHERE id=${id}
-        ;`);
+    await client.query(`
+        DELETE FROM routine_activities
+        WHERE id=${id};`);
   } catch (error) {
     throw error;
   }

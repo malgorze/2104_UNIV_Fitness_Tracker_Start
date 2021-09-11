@@ -19,6 +19,8 @@ const {
   createRoutine,
   getRoutinesWithoutActivities,
   getAllPublicRoutines,
+  destroyRoutine,
+  getAllRoutinesByUser,
 } = require("./routines");
 
 const {
@@ -42,6 +44,9 @@ module.exports = {
   getAllRoutines,
   getRoutineById,
   createRoutine,
+  destroyRoutine,
+  getAllPublicRoutines,
+  getAllRoutinesByUser,
   getRoutinesWithoutActivities,
   getRoutineActivityById,
   addActivityToRoutine,

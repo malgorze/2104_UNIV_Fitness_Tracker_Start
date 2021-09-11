@@ -111,11 +111,30 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 // destroyRoutine(id)
 // remove routine from database
 // Make sure to delete all the routine_activities whose routine is the one being deleted.
+async function destroyRoutine(id) {
+  try {
+    await client.query(`
+        DELETE FROM routine_activities
+        WHERE "routineId"=${id};`);
+  } catch (error) {
+    throw error;
+  }
+
+  try {
+    await client.query(`
+        DELETE FROM routines
+        WHERE id=${id};`);
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   getAllRoutines,
   getRoutineById,
   createRoutine,
   getRoutinesWithoutActivities,
+  getAllRoutinesByUser,
   getAllPublicRoutines,
+  destroyRoutine,
 };

@@ -114,15 +114,16 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 async function destroyRoutine(id) {
   try {
     await client.query(`
-        DELETE FROM routines
-        WHERE id=${id};`);
+        DELETE FROM routine_activities
+        WHERE "routineId"=${id};`);
   } catch (error) {
     throw error;
   }
+
   try {
     await client.query(`
-        DELETE FROM routines_activities
-        WHERE "RoutineId"=${id};`);
+        DELETE FROM routines
+        WHERE id=${id};`);
   } catch (error) {
     throw error;
   }

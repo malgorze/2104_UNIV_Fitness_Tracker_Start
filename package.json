@@ -22,11 +22,13 @@
   ],
   "author": "Fullstack Academy",
   "devDependencies": {
+    "eslint": "^7.32.0",
     "nodemon": "^2.0.12"
   },
   "dependencies": {
     "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "faker": "^4.1.0",
     "jest": "^26.0.1",

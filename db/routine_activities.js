@@ -56,14 +56,14 @@ async function addActivityToRoutine({
 
 async function updateRoutineActivity({ id, count, duration }) {
   try {
-    const {
-      rows: [routine_activity],
-    } = await client.query(`
-        UPDATE routine_activites(id, count, duration)
-        VALUES($1, $2, $3)
-        RETURNING *;
+    let routine_activity = await getRoutineActivityById(id);
+    routine_activity = await client.query(`
+        UPDATE routine_activites
+        SET count=$1, duration=$2
+        WHERE id=${id};
         `);
     [id, count, duration];
+    return routine_activity;
   } catch (error) {
     throw error;
   }

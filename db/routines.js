@@ -37,8 +37,10 @@ async function getRoutinesWithoutActivities() {
 async function getAllRoutines() {
   try {
     const { rows } = await client.query(`
-            SELECT name
-            FROM routines;
+            SELECT *
+            FROM routines
+            LEFT JOIN routine_activities ON routines.id=routine_activities."routineID
+            INNER JOIN activities.id=routine_activities."activityId";
           `);
     return rows;
   } catch (error) {
@@ -108,6 +110,22 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 // Don't update the routine id, but do update the isPublic status, name, or goal, as necessary
 // Return the updated routine
 
+async function updateRoutine({ id, isPublic, name, goal }) {
+  try {
+    let routine = getRoutineById(id);
+    routine = await client.query(
+      `UPDATE activities(name)
+        SET "isPublic"=$1, name=$2, goal=$3
+        WHERE id=${routine.id}
+        RETURNING *;`,
+      [isPublic, name, goal]
+    );
+    return routine;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // destroyRoutine(id)
 // remove routine from database
 // Make sure to delete all the routine_activities whose routine is the one being deleted.
@@ -133,6 +151,7 @@ module.exports = {
   getAllRoutines,
   getRoutineById,
   createRoutine,
+  updateRoutine,
   getRoutinesWithoutActivities,
   getAllRoutinesByUser,
   getAllPublicRoutines,

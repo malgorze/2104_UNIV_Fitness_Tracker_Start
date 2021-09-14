@@ -62,21 +62,21 @@ async function updateActivity({ id, name, description }) {
   if (!id) return null;
 
   try {
-    const activity = await getActivityById(id);
+    let activity = await getActivityById(id);
     if (name) {
       // TODO: Make sure to update the activity variable here
-      await client.query(
+      activity = await client.query(
         `UPDATE activities
         SET name=$1
-        WHERE id=${id}`,
+        WHERE id=${activity.id};`,
         [name]
       );
     }
     if (description) {
-      await client.query(
+      activity = await client.query(
         `UPDATE activities
         SET description=$1
-        WHERE id=${id}`,
+        WHERE id=${activity.id};`,
         [description]
       );
     }

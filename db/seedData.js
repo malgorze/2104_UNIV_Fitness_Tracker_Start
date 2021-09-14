@@ -58,10 +58,11 @@ async function createTables() {
     name VARCHAR(255) UNIQUE NOT NULL,
     description TEXT NOT NULL
     );`);
+
     await client.query(`
   CREATE TABLE routines (
     id SERIAL PRIMARY KEY,
-    "creatorId" INTEGER REFERENCES users(id),
+    "creatorId" FOREIGN KEY REFERENCES users(id),
     "isPublic" BOOLEAN DEFAULT false,
     name VARCHAR(255)	UNIQUE NOT NULL,
     goal TEXT	NOT NULL
@@ -69,8 +70,8 @@ async function createTables() {
     await client.query(`
   CREATE TABLE routine_activities (
     id SERIAL PRIMARY KEY,
-    "routineId"	INTEGER	REFERENCES routines(id),
-    "activityId" INTEGER REFERENCES activities(id),
+    "routineId" FOREIGN KEY REFERENCES routines(id),
+    "activityId" FOREIGN KEY REFERENCES activities(id),
     duration INTEGER,
     count	INTEGER
     );

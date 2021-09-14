@@ -24,7 +24,7 @@ async function getRoutineById(id) {
 async function getRoutinesWithoutActivities() {
   try {
     const { rows } = await client.query(`
-              SELECT name
+              SELECT *
               FROM routines;
             `);
     return rows;
@@ -36,13 +36,13 @@ async function getRoutinesWithoutActivities() {
 // select and return an array of all routines, include their activities
 async function getAllRoutines() {
   try {
-    const { rows } = await client.query(`
-            SELECT *
+    const routines = await client.query(`
+            SELECT activities.name 
             FROM routines
-            LEFT JOIN routine_activities ON routines.id=routine_activities."routineID
-            INNER JOIN activities.id=routine_activities."activityId";
+            JOIN routine_activities ON routines.id=routine_activities."routineId"
+            JOIN activities ON routine_activities."activityId"=activities.id;
           `);
-    return rows;
+    return routines;
   } catch (error) {
     throw error;
   }
@@ -54,7 +54,7 @@ async function getAllPublicRoutines() {
   try {
     const { rows } = await client.query(`
                 SELECT *  
-                FROM routines;
+                FROM routines
                 WHERE "isPublic"=true;
               `);
     return rows;
@@ -68,10 +68,11 @@ async function getAllPublicRoutines() {
 
 async function getAllRoutinesByUser({ username }) {
   try {
+    let creator = await getUserByUsername(username);
     const { rows } = await client.query(`
-                  SELECT name  
+                  SELECT *
                   FROM routines;
-                  WHERE "isPublic"=true;
+                  WHERE "creatorId"=${creator.id};
                 `);
     return rows;
   } catch (error) {
@@ -82,8 +83,35 @@ async function getAllRoutinesByUser({ username }) {
 // getPublicRoutinesByUser({ username })
 // select and return an array of public routines made by user, include their activities
 
+async function getPublicRoutinesByUser({ username }) {
+  try {
+    let creator = await getUserByUsername(username);
+    const { rows } = await client.query(`
+                  SELECT *
+                  FROM routines;
+                  WHERE "creatorId"=${creator.id};
+                `);
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // getPublicRoutinesByActivity({ id })
 // select and return an array of public routines which have a specific activityId in their routine_activities join, include their activities
+async function getPublicRoutinesByActivity({ id }) {
+  try {
+    let creator = await getUserByUsername(username);
+    const { rows } = await client.query(`
+                  SELECT *
+                  FROM routines;
+                  WHERE "creatorId"=${creator.id};
+                `);
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
 
 // createRoutine({ creatorId, isPublic, name, goal })
 // create and return the new routine
@@ -112,14 +140,34 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 
 async function updateRoutine({ id, isPublic, name, goal }) {
   try {
-    let routine = getRoutineById(id);
-    routine = await client.query(
-      `UPDATE activities(name)
-        SET "isPublic"=$1, name=$2, goal=$3
-        WHERE id=${routine.id}
+    if (isPublic) {
+      await client.query(
+        `UPDATE routines
+        SET "isPublic"=$1
+        WHERE id=${id}
         RETURNING *;`,
-      [isPublic, name, goal]
-    );
+        [isPublic]
+      );
+    }
+    if (name) {
+      await client.query(
+        `UPDATE routines
+          SET name=$1
+          WHERE id=${id}
+          RETURNING *;`,
+        [name]
+      );
+    }
+    if (goal) {
+      await client.query(
+        `UPDATE routines
+            SET goal=$1
+            WHERE id=${id}
+            RETURNING *;`,
+        [goal]
+      );
+    }
+    let routine = getRoutineById(id);
     return routine;
   } catch (error) {
     throw error;
@@ -156,4 +204,6 @@ module.exports = {
   getAllRoutinesByUser,
   getAllPublicRoutines,
   destroyRoutine,
+  getPublicRoutinesByActivity,
+  getPublicRoutinesByUser,
 };

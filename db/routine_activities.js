@@ -9,7 +9,7 @@ async function getRoutineActivityById(id) {
     const {
       rows: [routine_activity],
     } = await client.query(`
-         SELECT id, routine_activity
+         SELECT *
          FROM routine_activities
          WHERE id=${id};
          `);
@@ -56,13 +56,13 @@ async function addActivityToRoutine({
 
 async function updateRoutineActivity({ id, count, duration }) {
   try {
-    let routine_activity = await getRoutineActivityById(id);
-    routine_activity = await client.query(`
-        UPDATE routine_activites
+    await client.query(`
+        UPDATE routine_activities
         SET count=$1, duration=$2
         WHERE id=${id};
-        `);
-    [id, count, duration];
+        `),
+      [count, duration];
+    let routine_activity = await getRoutineActivityById(id);
     return routine_activity;
   } catch (error) {
     throw error;
@@ -75,9 +75,13 @@ async function updateRoutineActivity({ id, count, duration }) {
 
 async function destroyRoutineActivity(id) {
   try {
-    await client.query(`
-        DELETE FROM routine_activities
-        WHERE id=${id};`);
+    let routine_activity = await getRoutineActivityById(id);
+    console.log(routine_activity.id);
+    routine_activity = await client.query(
+      `
+      DELETE FROM routine_activities
+      WHERE id=${routine_activity.id};`
+    );
   } catch (error) {
     throw error;
   }
@@ -87,19 +91,17 @@ async function destroyRoutineActivity(id) {
 // getRoutineActivitiesByRoutine({ id })
 // select and return an array of all routine_activity records
 
-async function getRoutineActivitiesByRoutine({ routineId }) {
+async function getRoutineActivitiesByRoutine({ id }) {
   try {
-    const {
-      rows: [routine_activity],
-    } = await client.query(`
-        SELECT id, routine_activity
+    const { rows } = await client.query(`
+        SELECT "activityId"
         FROM routine_activities
-        WHERE id=${routineId};
+        WHERE "routineId"=${id};
         `);
-    if (!routine_activity) {
+    if (!rows) {
       return null;
     }
-    return routine_activity;
+    return rows;
   } catch (error) {
     throw error;
   }

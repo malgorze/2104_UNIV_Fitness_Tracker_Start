@@ -1,5 +1,4 @@
 const { client } = require("./client");
-// getActivityById
 
 async function getActivityById(id) {
   try {
@@ -20,7 +19,6 @@ async function getActivityById(id) {
     throw error;
   }
 }
-// getAllActivities
 async function getAllActivities() {
   try {
     const { rows } = await client.query(`
@@ -32,8 +30,6 @@ async function getAllActivities() {
     throw error;
   }
 }
-// select and return an array of all activities
-// createActivity({ name, description })
 
 async function createActivity({ name, description }) {
   try {
@@ -47,39 +43,32 @@ async function createActivity({ name, description }) {
             `,
       [name, description]
     );
-    // return the new activity
     return activity;
   } catch (error) {
     throw error;
   }
 }
-// updateActivity({ id, name, description }) 4
-// don't try to update the id
-// do update the name and description
-// return the updated activity
 
 async function updateActivity({ id, name, description }) {
   if (!id) return null;
 
   try {
-    let activity = await getActivityById(id);
-    if (name) {
-      // TODO: Make sure to update the activity variable here
-      activity = await client.query(
-        `UPDATE activities
+    await client.query(
+      `UPDATE activities
         SET name=$1
-        WHERE id=${activity.id};`,
-        [name]
-      );
-    }
-    if (description) {
-      activity = await client.query(
-        `UPDATE activities
+        WHERE id=${id};`,
+      [name]
+    );
+
+    await client.query(
+      `UPDATE activities
         SET description=$1
-        WHERE id=${activity.id};`,
-        [description]
-      );
-    }
+        WHERE id=${id};`,
+      [description]
+    );
+
+    let activity = await getActivityById(id);
+
     return activity;
   } catch (error) {
     throw error;

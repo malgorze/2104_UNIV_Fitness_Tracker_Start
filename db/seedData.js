@@ -22,6 +22,8 @@ const {
   destroyRoutineActivity,
   getRoutineActivitiesByRoutine,
   getAllRoutinesByUser,
+  getPublicRoutinesByActivity,
+  getPublicRoutinesByUser,
 } = require("./index");
 
 async function dropTables() {
@@ -62,7 +64,7 @@ async function createTables() {
     await client.query(`
   CREATE TABLE routines (
     id SERIAL PRIMARY KEY,
-    "creatorId" FOREIGN KEY REFERENCES users(id),
+    "creatorId" INTEGER REFERENCES users(id),
     "isPublic" BOOLEAN DEFAULT false,
     name VARCHAR(255)	UNIQUE NOT NULL,
     goal TEXT	NOT NULL
@@ -70,8 +72,8 @@ async function createTables() {
     await client.query(`
   CREATE TABLE routine_activities (
     id SERIAL PRIMARY KEY,
-    "routineId" FOREIGN KEY REFERENCES routines(id),
-    "activityId" FOREIGN KEY REFERENCES activities(id),
+    "routineId" INTEGER REFERENCES routines(id),
+    "activityId" INTEGER REFERENCES activities(id),
     duration INTEGER,
     count	INTEGER
     );

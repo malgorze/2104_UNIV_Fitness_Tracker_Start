@@ -16,9 +16,6 @@ async function createUser({ username, password }) {
           `,
       [username, hashedPassword]
     );
-
-    // delete user.password;
-    // need to hash password later //
     return user;
   } catch (error) {
     throw error;
@@ -42,19 +39,6 @@ async function getUser({ username, password }) {
     throw error;
   }
 }
-
-// async function getUser({ username, password }) {
-//   try {
-//     const user = await getUserByUsername(username);
-//     const UserPassword = user.password;
-//     const matchymatchy = await bcrypt.compare(password, UserPassword);
-//     if (!matchymatchy) return;
-//     delete user.password;
-//     return user;
-//   } catch (error) {
-//     throw error;
-//   }
-// }
 
 async function getUserById(userId) {
   try {

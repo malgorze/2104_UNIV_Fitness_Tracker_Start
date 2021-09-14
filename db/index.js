@@ -1,7 +1,7 @@
 module.exports = {
   ...require("./client"),
   ...require("./users"),
-  ...require("./activity"),
+  ...require("./activities"),
   ...require("./routines"),
   ...require("./routine_activities"),
 };
